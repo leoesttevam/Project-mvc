@@ -14,18 +14,21 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		
-		http.authorizeRequests()
-					  .anyRequest().authenticated()
-					  .and()
-					  .formLogin(form -> form.loginPage("/login")
-					  .permitAll());
-					  
-					  
+	    http
+	        .authorizeRequests()
+	            .antMatchers("/login").permitAll()
+	            .anyRequest().authenticated()
+	            .and()
+	        .formLogin(form -> form
+	            .loginPage("/login")
+	            .permitAll());
 	}
+
 	
 	@Bean
+	@Override
 	public UserDetailsService userDetailsService() {
 		
 		UserDetails user = User.withDefaultPasswordEncoder()
