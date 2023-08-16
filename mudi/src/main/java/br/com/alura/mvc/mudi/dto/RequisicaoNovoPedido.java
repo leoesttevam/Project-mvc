@@ -41,6 +41,7 @@ public class RequisicaoNovoPedido {
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
 	}
+	
 	public Pedido toPedido() {
 		Pedido pedido = new Pedido();
 		pedido.setDescricao(descricao);
