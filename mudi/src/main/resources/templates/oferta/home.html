@@ -16,18 +16,26 @@
 				<div class="card-body">
 					<div class="row">
 						<div class="col-12 col-sm-8 mb-3">
-							<div class="row ">
-								<div class="col-md-5">Valor: <input/> </div>
-								<div class="col-md-6">Data da entrega: <input/> </div>
-							</div>
 							
 							<div>Produto</div> 
 							<div> <a v-binf:href="pedido.urlProduto">{{pedido.nomeProduto}}</a> </div>
 							 
-							<div>Descrição</div>
-							<div>
-								<textarea class="form-control">{{pedido.descricao}}</textarea>
+							 <div>Descrição</div>
+							 <div>
+								 <textarea disabled="disabled" class="form-control" v-model="pedido.descricao"></textarea>
+							 </div>
+							 
+							 <div class="row mt-3">
+								<div class="col-md-5 form-control">Valor: <input v-model="pedido.valorNegociado" /> </div>
+								<div class="col-md-6 form-control">Data da entrega: <input v-model="pedido.dataEntrega"/> </div>
 							</div>
+							
+							<div class="mt-2">
+								<label>Comentário</label>
+								<textarea class="form-control" v-model="pedido.comentario"></textarea>
+							</div>
+							<button v-on:click="enviarOferta(pedido)" class="btn btn-primary">Enviar Oferta</button>
+							
 						</div>
 						<div class="col-12 col-sm-4">
 							<div>
@@ -51,6 +59,11 @@
 						axios
 							.get('http://localhost:8080/api/pedidos/aguardando')
 							.then(response => (this.pedidos = response.data))
+					},
+					methods: {
+						enviarOferta: function(pedido) {
+							console.log(pedido);
+						}
 					}
 				});
 				
