@@ -26,8 +26,19 @@
 							 </div>
 							 
 							 <div class="row mt-3">
-								<div class="col-md-5 form-control">Valor: <input v-model="pedido.valorNegociado" /> </div>
-								<div class="col-md-6 form-control">Data da entrega: <input v-model="pedido.dataEntrega"/> </div>
+								<div class="col-md-5 form-control">
+									Valor: <input v-bind:class="{'is-invalid':pedido.erros.valor !== ''}" v-model="pedido.valorNegociado"/>
+									<div v-if="pedido.erros.valor" class="invalid-feedback">
+										{{pedido.erros.valor}}
+									</div> 
+								</div>
+								
+								<div class="col-md-6 form-control">
+									Data da entrega: <input v-bind:class="{'is-invalid':pedido.erros.dataEntrega !== ''}" v-model="pedido.dataEntrega"/>
+									<div v-if="pedido.erros.dataEntrega" class="invalid-feedback">
+										{{pedido.erros.dataEntrega}}
+									</div>
+								</div>
 							</div>
 							
 							<div class="mt-2">
@@ -60,12 +71,23 @@
 						axios
 							.get('http://localhost:8080/api/pedidos/aguardando')
 							.then(response => {
-									response.data.forEach(pedido => pedido.ofertaEnviada = false)
+									response.data.forEach(pedido => {
+										pedido.ofertaEnviada = false;
+										pedido.errors = {
+											valor: '',
+											dataEntrega: ''
+										}
+									})
 									this.pedidos = response.data
 								})
 					},
 					methods: {
 						enviarOferta: function(pedido) {
+							pedido.errors = {
+								valor: '',
+								dataEntrega: ''
+							};
+							
 							axios
 								.post('http://localhost:8080/api/ofertas',{
 									pedidoId: pedido.id,
@@ -73,7 +95,12 @@
 									dataEntrega: pedido.dataEntrega,
 									comentario: pedido.comentario
 								})
-								.then(response => pedido.ofertaEnviada = true);
+								.then(response => pedido.ofertaEnviada = true)
+								.catch(erro => {
+									error.response.data.errors.forEach(error => {
+										this.pedido.erros[error.field] = error.defaulMessage;
+									})
+								})
 						}
 					}
 				});
